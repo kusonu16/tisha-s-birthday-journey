@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, Heart, Music2, Sparkles } from "lucide-react";
 import {
   EnvelopeCelebration,
@@ -38,6 +38,10 @@ export default function BirthdaySurprise() {
       }
     };
   }, []);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [stage]);
 
   const goBack = () => {
     setStage((current) => Math.max(0, current - 1) as SurpriseStage);
