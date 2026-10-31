@@ -10,6 +10,7 @@ import {
   Gift,
   Heart,
   Mail,
+  Music2,
   PartyPopper,
   Rainbow,
   Smile,
@@ -53,6 +54,12 @@ export function EnvelopeStage({ onContinue }: StageProps) {
       </div>
 
       <div className={`envelope-art${isOpening ? " is-opening" : ""}`}>
+        <span aria-hidden="true" className="envelope-charm envelope-charm--music">
+          <Music2 />
+        </span>
+        <span aria-hidden="true" className="envelope-charm envelope-charm--sparkle">
+          <Sparkles />
+        </span>
         <button
           aria-label="Open the birthday letter"
           className="envelope-button"
@@ -87,7 +94,10 @@ export function EnvelopeStage({ onContinue }: StageProps) {
         {isOpening ? envelope.opening : envelope.button}
         <Mail aria-hidden="true" />
       </button>
-      <p className="micro-copy">{envelope.microCopy}</p>
+      <p className="micro-copy">
+        <Music2 aria-hidden="true" />
+        {envelope.microCopy}
+      </p>
     </section>
   );
 }
@@ -161,7 +171,11 @@ export function InvitationStage({ onContinue }: StageProps) {
           </button>
         </div>
       </div>
-      <p aria-live="polite" className={`cancel-whimsy${hasMoved ? " is-visible" : ""}`} id="cancel-whimsy">
+      <p
+        aria-live="polite"
+        className={`cancel-whimsy${hasMoved ? " is-visible" : ""}`}
+        id="cancel-whimsy"
+      >
         {hasMoved ? invitation.escaped : " "}
       </p>
       <p className="invite-note">{invitation.note}</p>
@@ -427,7 +441,12 @@ function PhotoLightbox({ activeIndex, photos, onChange, onClose }: PhotoLightbox
           <span className="lightbox-index">
             0{activeIndex + 1} <i>/ {String(total).padStart(2, "0")}</i>
           </span>
-          <button aria-label="Close photo" className="lightbox-close" onClick={onClose} type="button">
+          <button
+            aria-label="Close photo"
+            className="lightbox-close"
+            onClick={onClose}
+            type="button"
+          >
             <X aria-hidden="true" />
           </button>
         </div>
@@ -581,7 +600,10 @@ export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
         <span className="eyebrow-dot" /> the grand finale
       </p>
       <h1 className="finale-heading" id="finale-heading">
-        {finale.heading.replace("TISHA!", "")} <span className="finale-heading-cake"><Cake /></span>
+        {finale.heading.replace("TISHA!", "")}{" "}
+        <span className="finale-heading-cake">
+          <Cake />
+        </span>
         <br />
         <span className="finale-heading-name">TISHA!</span>
       </h1>
@@ -605,7 +627,11 @@ export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
           {finale.celebrateAgain}
           <PartyPopper aria-hidden="true" />
         </button>
-        <button className="birthday-cta birthday-cta--outline" onClick={onViewMemories} type="button">
+        <button
+          className="birthday-cta birthday-cta--outline"
+          onClick={onViewMemories}
+          type="button"
+        >
           {finale.viewMemories}
           <Camera aria-hidden="true" />
         </button>

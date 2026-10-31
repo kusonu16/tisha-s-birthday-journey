@@ -1,11 +1,3 @@
-import photo01 from "@/assets/photo-01.png.asset.json";
-import photo02 from "@/assets/photo-02.png.asset.json";
-import photo03 from "@/assets/photo-03.png.asset.json";
-import photo04 from "@/assets/photo-04.png.asset.json";
-import photo05 from "@/assets/photo-05.png.asset.json";
-import photo06 from "@/assets/photo-06.png.asset.json";
-import musicSrc from "@/assets/birthday-music.mp3.asset.json";
-
 /**
  * ─────────────────────────────────────────────────────────────
  *  Central birthday configuration
@@ -14,14 +6,7 @@ import musicSrc from "@/assets/birthday-music.mp3.asset.json";
  */
 
 export type MessageIcon =
-  | "sparkles"
-  | "smile"
-  | "heart"
-  | "sun"
-  | "flower"
-  | "star"
-  | "rainbow"
-  | "gift";
+  "sparkles" | "smile" | "heart" | "sun" | "flower" | "star" | "rainbow" | "gift";
 
 export interface BirthdayMessage {
   text: string;
@@ -38,7 +23,7 @@ export const birthdayConfig = {
     copy: "Someone has prepared a little something to make your day extra special.",
     button: "OPEN YOUR LETTER 💌",
     opening: "Opening your letter...",
-    microCopy: "Best opened with a little curiosity",
+    microCopy: "A little letter, a little melody, all for you.",
   },
 
   invitation: {
@@ -105,43 +90,43 @@ export const birthdayConfig = {
     intro: "Every picture holds a little moment worth remembering.",
     photos: [
       {
-        src: photo01.url,
-        alt: "Tisha glowing in an elegant olive green gown outdoors",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/01-LyTPtlhcWRuIcdxqQovueeOh3K4bv8.png",
+        alt: "Tisha in an olive-green dress on a city sidewalk",
         title: "Elegance in olive",
         note: "Calm, graceful and simply stunning",
         sticker: "main character hour",
       },
       {
-        src: photo02.url,
-        alt: "Tisha in soft pink ethnic wear with a dreamy seaside glow",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/02-qYn2SHfEi3VxUFN67UV7xOsTNpSDgQ.png",
+        alt: "Tisha in a pink embellished outfit with silver jewelry in a soft-lit portrait",
         title: "Pretty in pink",
         note: "A soft glow and golden-hour charm",
         sticker: "ocean breeze vibes",
       },
       {
-        src: photo03.url,
-        alt: "Tisha laughing in a red sweater and sunglasses against a red wall",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/03-wG8TN9EwEVUMv8HpDbmu3MfRVQokPK.png",
+        alt: "Tisha laughing in sunglasses and a red sweater against a bright red shutter",
         title: "That infectious laugh",
         note: "Pure joy, unfiltered and bright",
         sticker: "vibe check: sunny",
       },
       {
-        src: photo04.url,
-        alt: "Tisha exploring old stone steps in a green floral skirt",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/04-fv5QudmliTIWt4sZOgS4FDOrjjijb7.png",
+        alt: "Tisha in a teal patterned skirt beside an old stone building",
         title: "Little adventures",
         note: "Streets, stories and wanderlust",
         sticker: "wanderer approved",
       },
       {
-        src: photo05.url,
-        alt: "Tisha looking effortlessly chic in the city at night",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/05-Og3FDVNawR9U92tQev55zCCrSMBeCF.png",
+        alt: "Tisha in a black top and sunglasses in an evening portrait",
         title: "City lights & her",
         note: "Cool, calm and effortlessly chic",
         sticker: "night-out energy",
       },
       {
-        src: photo06.url,
-        alt: "Tisha smiling brightly in a cream saree beside a forest stream",
+        src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/06-XNLXUQibWgXq8mRsSUg0FFMCvW7qLP.png",
+        alt: "Tisha smiling in a cream sari beside a forest stream",
         title: "Joy, pure and simple",
         note: "The smile that wins every time",
         sticker: "smile of the year",
@@ -167,10 +152,10 @@ export const birthdayConfig = {
   },
 
   music: {
-    src: musicSrc.url,
-    label: "Birthday music",
-    play: "Play gentle birthday music",
-    pause: "Pause the birthday music",
+    src: "/tisha-birthday-waltz.wav",
+    label: "Tisha's original birthday waltz",
+    play: "Play Tisha's original birthday waltz",
+    pause: "Pause Tisha's original birthday waltz",
   },
 } as const;
 

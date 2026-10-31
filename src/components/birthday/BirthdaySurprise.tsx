@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Heart, Music2, Sparkles } from "lucide-react";
 import {
   EnvelopeStage,
@@ -22,7 +22,12 @@ const stageLabels = [
 export default function BirthdaySurprise() {
   const [stage, setStage] = useState<SurpriseStage>(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    return () => audio?.pause();
+  }, []);
 
   const goBack = () => {
     setStage((current) => Math.max(0, current - 1) as SurpriseStage);
@@ -33,24 +38,19 @@ export default function BirthdaySurprise() {
   };
 
   const toggleMusic = async () => {
-    let audio = audioElement;
-    if (!audio) {
-      audio = new Audio(birthdayConfig.music.src);
-      audio.loop = true;
-      audio.preload = "auto";
-      setAudioElement(audio);
-    }
-    try {
-      if (musicPlaying) {
-        audio.pause();
-        setMusicPlaying(false);
-      } else {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      try {
         await audio.play();
-        setMusicPlaying(true);
+      } catch {
+        setMusicPlaying(false);
       }
-    } catch {
-      setMusicPlaying(false);
+      return;
     }
+
+    audio.pause();
   };
 
   return (
@@ -141,12 +141,29 @@ export default function BirthdaySurprise() {
         type="button"
       >
         <Music2 aria-hidden="true" />
+        <span aria-hidden="true" className="music-toggle__copy">
+          <span className="music-toggle__eyebrow">ORIGINAL SCORE</span>
+          <span className="music-toggle__title">
+            {musicPlaying ? "Now playing" : "A little birthday waltz"}
+          </span>
+        </span>
         <span aria-hidden="true" className="music-waves">
           <i />
           <i />
           <i />
         </span>
       </button>
+      <audio
+        aria-hidden="true"
+        hidden
+        loop
+        onError={() => setMusicPlaying(false)}
+        onPause={() => setMusicPlaying(false)}
+        onPlay={() => setMusicPlaying(true)}
+        preload="none"
+        ref={audioRef}
+        src={birthdayConfig.music.src}
+      />
     </div>
   );
 }
