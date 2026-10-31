@@ -3023,8 +3023,8 @@
 }
 
 .finale-collage {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 96px);
   align-items: center;
   justify-content: center;
   gap: 16px 18px;
