@@ -3158,8 +3158,8 @@
     gap: 5px;
   }
 
-  .collage-polaroid {
-    width: 82px;
+  .finale-collage {
+    grid-template-columns: repeat(3, 82px);
   }
 
   .finale-actions .birthday-cta {
