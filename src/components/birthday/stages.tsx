@@ -10,6 +10,7 @@ import {
   Gift,
   Heart,
   Mail,
+  Music2,
   PartyPopper,
   Rainbow,
   Smile,
@@ -24,17 +25,22 @@ interface StageProps {
   onContinue: () => void;
 }
 
+interface EnvelopeStageProps extends StageProps {
+  onOpen: () => void;
+}
+
 /* ──────────────────────────────────────────────── */
 /* STAGE 1 · MAGICAL ENVELOPE OPENING               */
 /* ──────────────────────────────────────────────── */
 
-export function EnvelopeStage({ onContinue }: StageProps) {
+export function EnvelopeStage({ onContinue, onOpen }: EnvelopeStageProps) {
   const [isOpening, setIsOpening] = useState(false);
   const { envelope } = birthdayConfig;
 
   const openLetter = () => {
     if (isOpening) return;
     setIsOpening(true);
+    onOpen();
     window.setTimeout(onContinue, 760);
   };
 
@@ -53,6 +59,12 @@ export function EnvelopeStage({ onContinue }: StageProps) {
       </div>
 
       <div className={`envelope-art${isOpening ? " is-opening" : ""}`}>
+        <span aria-hidden="true" className="envelope-charm envelope-charm--music">
+          <Music2 />
+        </span>
+        <span aria-hidden="true" className="envelope-charm envelope-charm--sparkle">
+          <Sparkles />
+        </span>
         <button
           aria-label="Open the birthday letter"
           className="envelope-button"
@@ -87,7 +99,10 @@ export function EnvelopeStage({ onContinue }: StageProps) {
         {isOpening ? envelope.opening : envelope.button}
         <Mail aria-hidden="true" />
       </button>
-      <p className="micro-copy">{envelope.microCopy}</p>
+      <p className="micro-copy">
+        <Music2 aria-hidden="true" />
+        {envelope.microCopy}
+      </p>
     </section>
   );
 }
@@ -161,7 +176,11 @@ export function InvitationStage({ onContinue }: StageProps) {
           </button>
         </div>
       </div>
-      <p aria-live="polite" className={`cancel-whimsy${hasMoved ? " is-visible" : ""}`} id="cancel-whimsy">
+      <p
+        aria-live="polite"
+        className={`cancel-whimsy${hasMoved ? " is-visible" : ""}`}
+        id="cancel-whimsy"
+      >
         {hasMoved ? invitation.escaped : " "}
       </p>
       <p className="invite-note">{invitation.note}</p>
@@ -197,6 +216,8 @@ export function MessageStage({ onContinue }: StageProps) {
   };
 
   const message = messages.items[index];
+  if (!message) return null;
+
   const Icon = iconMap[message.icon];
   const isLast = index === total - 1;
 
@@ -413,6 +434,8 @@ function PhotoLightbox({ activeIndex, photos, onChange, onClose }: PhotoLightbox
     if (event.target === event.currentTarget) onClose();
   };
 
+  if (!photo) return null;
+
   return (
     <div className="lightbox-backdrop" onClick={handleBackdropClick} role="presentation">
       <div
@@ -427,7 +450,12 @@ function PhotoLightbox({ activeIndex, photos, onChange, onClose }: PhotoLightbox
           <span className="lightbox-index">
             0{activeIndex + 1} <i>/ {String(total).padStart(2, "0")}</i>
           </span>
-          <button aria-label="Close photo" className="lightbox-close" onClick={onClose} type="button">
+          <button
+            aria-label="Close photo"
+            className="lightbox-close"
+            onClick={onClose}
+            type="button"
+          >
             <X aria-hidden="true" />
           </button>
         </div>
@@ -489,6 +517,55 @@ const balloons = Array.from({ length: 6 }, (_, index) => ({
   color: ["#f3b6c8", "#cbb6e8", "#f7d3ab", "#b9d9c6", "#f3b6c8", "#d9c2ee"][index],
   drift: index % 2 === 0 ? 1 : -1,
 }));
+
+export function EnvelopeCelebration() {
+  return (
+    <div aria-hidden="true" className="envelope-celebration">
+      <div className="confetti-rain">
+        {fallingConfetti.map((bit, index) => (
+          <span
+            key={index}
+            data-shape={bit.shape}
+            style={
+              {
+                left: bit.left,
+                "--confetti-delay": `${(index % 12) * 0.055}s`,
+                "--confetti-dur": "3.6s",
+                "--confetti-rot": bit.rotation,
+                "--confetti-color": bit.color,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
+      <div className="balloon-field">
+        {balloons.map((balloon, index) => (
+          <span
+            key={index}
+            className="balloon"
+            style={
+              {
+                left: balloon.left,
+                "--balloon-delay": `${index * 0.12}s`,
+                "--balloon-dur": "3.8s",
+                "--balloon-color": balloon.color,
+                "--balloon-drift": `${balloon.drift * 26}px`,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
+      <span className="party-popper party-popper--left">
+        <PartyPopper />
+        <span className="popper-sparks" />
+      </span>
+      <span className="party-popper party-popper--right">
+        <PartyPopper />
+        <span className="popper-sparks" />
+      </span>
+    </div>
+  );
+}
 
 export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
   const { finale } = birthdayConfig;
@@ -581,7 +658,10 @@ export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
         <span className="eyebrow-dot" /> the grand finale
       </p>
       <h1 className="finale-heading" id="finale-heading">
-        {finale.heading.replace("TISHA!", "")} <span className="finale-heading-cake"><Cake /></span>
+        {finale.heading.replace("TISHA!", "")}{" "}
+        <span className="finale-heading-cake">
+          <Cake />
+        </span>
         <br />
         <span className="finale-heading-name">TISHA!</span>
       </h1>
@@ -605,7 +685,11 @@ export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
           {finale.celebrateAgain}
           <PartyPopper aria-hidden="true" />
         </button>
-        <button className="birthday-cta birthday-cta--outline" onClick={onViewMemories} type="button">
+        <button
+          className="birthday-cta birthday-cta--outline"
+          onClick={onViewMemories}
+          type="button"
+        >
           {finale.viewMemories}
           <Camera aria-hidden="true" />
         </button>
