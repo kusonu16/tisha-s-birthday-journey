@@ -216,6 +216,8 @@ export function MessageStage({ onContinue }: StageProps) {
   };
 
   const message = messages.items[index];
+  if (!message) return null;
+
   const Icon = iconMap[message.icon];
   const isLast = index === total - 1;
 
@@ -431,6 +433,8 @@ function PhotoLightbox({ activeIndex, photos, onChange, onClose }: PhotoLightbox
   const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) onClose();
   };
+
+  if (!photo) return null;
 
   return (
     <div className="lightbox-backdrop" onClick={handleBackdropClick} role="presentation">

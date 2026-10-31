@@ -44,6 +44,19 @@ export default function BirthdaySurprise() {
   };
 
   const restart = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      audio.volume = SOFT_MUSIC_VOLUME;
+      void audio.play().catch(() => setMusicPlaying(false));
+    }
+
+    if (celebrationTimeoutRef.current !== null) {
+      window.clearTimeout(celebrationTimeoutRef.current);
+      celebrationTimeoutRef.current = null;
+    }
+
+    setShowOpeningCelebration(false);
     setStage(0);
   };
 
