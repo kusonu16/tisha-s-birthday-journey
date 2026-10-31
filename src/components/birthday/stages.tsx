@@ -25,17 +25,22 @@ interface StageProps {
   onContinue: () => void;
 }
 
+interface EnvelopeStageProps extends StageProps {
+  onOpen: () => void;
+}
+
 /* ──────────────────────────────────────────────── */
 /* STAGE 1 · MAGICAL ENVELOPE OPENING               */
 /* ──────────────────────────────────────────────── */
 
-export function EnvelopeStage({ onContinue }: StageProps) {
+export function EnvelopeStage({ onContinue, onOpen }: EnvelopeStageProps) {
   const [isOpening, setIsOpening] = useState(false);
   const { envelope } = birthdayConfig;
 
   const openLetter = () => {
     if (isOpening) return;
     setIsOpening(true);
+    onOpen();
     window.setTimeout(onContinue, 760);
   };
 
@@ -508,6 +513,55 @@ const balloons = Array.from({ length: 6 }, (_, index) => ({
   color: ["#f3b6c8", "#cbb6e8", "#f7d3ab", "#b9d9c6", "#f3b6c8", "#d9c2ee"][index],
   drift: index % 2 === 0 ? 1 : -1,
 }));
+
+export function EnvelopeCelebration() {
+  return (
+    <div aria-hidden="true" className="envelope-celebration">
+      <div className="confetti-rain">
+        {fallingConfetti.map((bit, index) => (
+          <span
+            key={index}
+            data-shape={bit.shape}
+            style={
+              {
+                left: bit.left,
+                "--confetti-delay": `${(index % 12) * 0.055}s`,
+                "--confetti-dur": "3.6s",
+                "--confetti-rot": bit.rotation,
+                "--confetti-color": bit.color,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
+      <div className="balloon-field">
+        {balloons.map((balloon, index) => (
+          <span
+            key={index}
+            className="balloon"
+            style={
+              {
+                left: balloon.left,
+                "--balloon-delay": `${index * 0.12}s`,
+                "--balloon-dur": "3.8s",
+                "--balloon-color": balloon.color,
+                "--balloon-drift": `${balloon.drift * 26}px`,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
+      <span className="party-popper party-popper--left">
+        <PartyPopper />
+        <span className="popper-sparks" />
+      </span>
+      <span className="party-popper party-popper--right">
+        <PartyPopper />
+        <span className="popper-sparks" />
+      </span>
+    </div>
+  );
+}
 
 export function FinaleStage({ onRestart, onViewMemories }: FinaleStageProps) {
   const { finale } = birthdayConfig;

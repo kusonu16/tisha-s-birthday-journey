@@ -152,10 +152,10 @@ export const birthdayConfig = {
   },
 
   music: {
-    src: "/tisha-birthday-waltz.wav",
-    label: "Tisha's original birthday waltz",
-    play: "Play Tisha's original birthday waltz",
-    pause: "Pause Tisha's original birthday waltz",
+    src: "/tisha-soft-birthday.mp3",
+    label: "Soft birthday music",
+    play: "Turn soft birthday music on",
+    pause: "Turn soft birthday music off",
   },
 } as const;
 

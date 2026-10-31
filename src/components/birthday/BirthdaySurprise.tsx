@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Heart, Music2, Sparkles } from "lucide-react";
 import {
+  EnvelopeCelebration,
   EnvelopeStage,
   FinaleStage,
   GalleryStage,
@@ -8,6 +9,8 @@ import {
   MessageStage,
 } from "@/components/birthday/stages";
 import { birthdayConfig } from "@/data/birthdayConfig";
+
+const SOFT_MUSIC_VOLUME = 0.42;
 
 type SurpriseStage = 0 | 1 | 2 | 3 | 4;
 
@@ -22,11 +25,18 @@ const stageLabels = [
 export default function BirthdaySurprise() {
   const [stage, setStage] = useState<SurpriseStage>(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [showOpeningCelebration, setShowOpeningCelebration] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const celebrationTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
-    return () => audio?.pause();
+    return () => {
+      audio?.pause();
+      if (celebrationTimeoutRef.current !== null) {
+        window.clearTimeout(celebrationTimeoutRef.current);
+      }
+    };
   }, []);
 
   const goBack = () => {
@@ -37,20 +47,38 @@ export default function BirthdaySurprise() {
     setStage(0);
   };
 
-  const toggleMusic = async () => {
+  const startMusic = () => {
+    const audio = audioRef.current;
+    if (!audio || !audio.paused) return;
+
+    audio.volume = SOFT_MUSIC_VOLUME;
+    void audio.play().catch(() => setMusicPlaying(false));
+  };
+
+  const toggleMusic = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (audio.paused) {
-      try {
-        await audio.play();
-      } catch {
-        setMusicPlaying(false);
-      }
+      startMusic();
       return;
     }
 
     audio.pause();
+  };
+
+  const handleEnvelopeOpen = () => {
+    startMusic();
+    setShowOpeningCelebration(true);
+
+    if (celebrationTimeoutRef.current !== null) {
+      window.clearTimeout(celebrationTimeoutRef.current);
+    }
+
+    celebrationTimeoutRef.current = window.setTimeout(() => {
+      setShowOpeningCelebration(false);
+      celebrationTimeoutRef.current = null;
+    }, 4600);
   };
 
   return (
@@ -65,6 +93,8 @@ export default function BirthdaySurprise() {
         <Heart className="ambient-heart ambient-heart--one" />
         <Heart className="ambient-heart ambient-heart--two" />
       </div>
+
+      {showOpeningCelebration ? <EnvelopeCelebration /> : null}
 
       <header className="birthday-header">
         <div className="header-brand-group">
@@ -104,15 +134,38 @@ export default function BirthdaySurprise() {
           <span className="progress-stage">{stageLabels[stage]}</span>
         </div>
 
-        <div className="header-recipient">
-          <span>made for</span>
-          <strong>{birthdayConfig.name}</strong>
+        <div className="header-actions">
+          <div className="header-recipient">
+            <span>made for</span>
+            <strong>{birthdayConfig.name}</strong>
+          </div>
+          <button
+            aria-label={musicPlaying ? birthdayConfig.music.pause : birthdayConfig.music.play}
+            aria-pressed={musicPlaying}
+            className={`music-toggle${musicPlaying ? " is-playing" : ""}`}
+            onClick={toggleMusic}
+            title={birthdayConfig.music.label}
+            type="button"
+          >
+            <Music2 aria-hidden="true" />
+            <span aria-hidden="true" className="music-toggle__copy">
+              <span className="music-toggle__eyebrow">SOFT MUSIC</span>
+              <span className="music-toggle__title">{musicPlaying ? "ON" : "OFF"}</span>
+            </span>
+            <span aria-hidden="true" className="music-waves">
+              <i />
+              <i />
+              <i />
+            </span>
+          </button>
         </div>
       </header>
 
       <main className="birthday-main">
         <div className="stage-view" key={stage}>
-          {stage === 0 ? <EnvelopeStage onContinue={() => setStage(1)} /> : null}
+          {stage === 0 ? (
+            <EnvelopeStage onContinue={() => setStage(1)} onOpen={handleEnvelopeOpen} />
+          ) : null}
           {stage === 1 ? <InvitationStage onContinue={() => setStage(2)} /> : null}
           {stage === 2 ? <MessageStage onContinue={() => setStage(3)} /> : null}
           {stage === 3 ? <GalleryStage onContinue={() => setStage(4)} /> : null}
@@ -132,27 +185,6 @@ export default function BirthdaySurprise() {
         </span>
       </footer>
 
-      <button
-        aria-label={musicPlaying ? birthdayConfig.music.pause : birthdayConfig.music.play}
-        aria-pressed={musicPlaying}
-        className={`music-toggle${musicPlaying ? " is-playing" : ""}`}
-        onClick={() => void toggleMusic()}
-        title={birthdayConfig.music.label}
-        type="button"
-      >
-        <Music2 aria-hidden="true" />
-        <span aria-hidden="true" className="music-toggle__copy">
-          <span className="music-toggle__eyebrow">ORIGINAL SCORE</span>
-          <span className="music-toggle__title">
-            {musicPlaying ? "Now playing" : "A little birthday waltz"}
-          </span>
-        </span>
-        <span aria-hidden="true" className="music-waves">
-          <i />
-          <i />
-          <i />
-        </span>
-      </button>
       <audio
         aria-hidden="true"
         hidden
